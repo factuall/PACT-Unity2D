@@ -1,16 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class DoorController : MonoBehaviour
 {
     public int rotation = 0;
     public bool isOpened = false;
+    public BoxCollider2D closedDoorCollider;
+    public CircleCollider2D doorTrigger;
     public Animator animator;
+    public GameplayManager.Direction doorDirection;
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+        //closedDoorCollider = GetComponent<BoxCollider2D>();
         SetDoorState(true);
     }
 
@@ -26,7 +31,15 @@ public class DoorController : MonoBehaviour
     {
         isOpened = ds;
         animator.SetBool("doorOpen", ds);
+        closedDoorCollider.enabled = !ds;
+    }
 
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.tag == "Player" && col.isTrigger)
+        {
+            GameObject.Find("/GameplayManager").GetComponent<GameplayManager>().ChangeRoom(doorDirection);
+        }
     }
 
 }

@@ -1,13 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class GameplayManager : MonoBehaviour
 {
+    public enum Direction
+    {
+        UP, DOWN, LEFT, RIGHT
+    }
 
     public GameRoom currentRoom;
     public GameObject roomPrefab;
+    public PlayerController pl;
     Camera mainCamera;
     bool gameplayReady = false;
 
@@ -143,6 +150,33 @@ public class GameplayManager : MonoBehaviour
                 }
             }
             if (!generatedAnything) break;
+        }
+    }
+
+    public void ChangeRoom(Direction dir)
+    {
+        switch (dir)
+        {
+            case Direction.UP:
+                currentRoom = floorRooms[currentRoom.X, currentRoom.Y + 1];
+                pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y + 2.5f, pl.transform.position.z);
+                break;
+            
+            case Direction.DOWN:
+                currentRoom = floorRooms[currentRoom.X, currentRoom.Y - 1];
+                pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 2.5f, pl.transform.position.z);
+                break;
+            
+            case Direction.LEFT:
+                currentRoom = floorRooms[currentRoom.X - 1, currentRoom.Y];
+                pl.transform.position = new Vector3(pl.transform.position.x - 2.5f, pl.transform.position.y, pl.transform.position.z);
+                break;
+            
+            case Direction.RIGHT:
+                currentRoom = floorRooms[currentRoom.X + 1, currentRoom.Y];
+                pl.transform.position = new Vector3(pl.transform.position.x + 2.5f, pl.transform.position.y, pl.transform.position.z);
+                break;
+            
         }
     }
 }
